@@ -1,0 +1,71 @@
+# Yii2 Tempmail Validator
+
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Total Downloads][ico-downloads]][link-downloads]
+
+Yii2 validator, based on [https://github.com/elyby/php-tempmailbuster](https://github.com/elyby/php-tempmailbuster)
+library and [https://github.com/elyby/anti-tempmail-repo](https://github.com/elyby/anti-tempmail-repo) reference.
+Helps to protect you site from users, who use 10-minutes mail services.
+
+## Installation
+
+Install the latest version with
+
+```sh
+$ composer require "ely/yii2-tempmail-validator:~1.0.0"
+```
+
+## Usage
+
+Once the extension is installed, simply use it in your models:
+
+```php
+public function rules()
+{
+    return [
+        [['email'], \Ely\Yii2\TempmailValidator::className()],
+    ];
+}
+```
+
+Also you can configure validator:
+
+```php
+public function rules()
+{
+    return [
+        [['email'], \Ely\Yii2\TempmailValidator::className(),
+            'message' => '{attribute} is tempmail. You will not pass',
+            'whiteList' => false,
+            'secondaryStorage' => ['spam4\.me'],
+        ],
+    ];
+}
+```
+
+## Change log
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Credits
+
+This package was designed and developed within the [Ely.by](http://ely.by) project team. We also thank all the
+[contributors](link-contributors) for their help.
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/ely/yii2-tempmail-validator.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/ely/yii2-tempmail-validator.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/ely/yii2-tempmail-validator
+[link-author]: https://github.com/ErickSkrauch
+[link-contributors]: ../../contributors
+[link-downloads]: https://packagist.org/packages/ely/yii2-tempmail-validator

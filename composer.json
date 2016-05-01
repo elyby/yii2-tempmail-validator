@@ -1,0 +1,33 @@
+{
+    "name": "ely/yii2-tempmail-validator",
+    "description": "Yii2 validator to prevent using tempmail services or any variable domains",
+    "keywords": ["yii2", "email", "validation"],
+    "homepage": "https://github.com/elyby/yii2-tempmail-validator",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Ely.by team",
+            "email": "team@ely.by"
+        },
+        {
+            "name": "ErickSkrauch",
+            "email": "erickskrauch@ely.by"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "ely/php-tempmailbuster": "~1.0.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8 || ~5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ely\\Yii2\\": "src"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
