@@ -1,31 +1,16 @@
 <?php
 namespace Ely\Yii2;
 
-use Ely\TempMailBuster\StorageInterface;
-use Ely\TempMailBuster\Validator as TempmailBuster;
+use EmailValidation\EmailAddress;
+use EmailValidation\EmailDataProvider;
+use EmailValidation\EmailValidator;
+use EmailValidation\ValidationResults;
+use EmailValidation\Validations\DisposableEmailValidator;
 use Yii;
 use yii\validators\Validator;
 
 class TempmailValidator extends Validator
 {
-    /**
-     * @var string class name for used tempmail loader
-     */
-    public $loader = '\Ely\TempMailBuster\Loader\AntiTempmailRepo';
-    /**
-     * @var string class name for used storage object
-     */
-    public $storage = '\Ely\TempMailBuster\Storage';
-    /**
-     * @var bool switcher for white/blacklist validation
-     */
-    public $whitelistMode = false;
-    /**
-     * @var null|array|StorageInterface additional list to invert current mode validation
-     * @see \Ely\TempMailBuster\Validator::validate() implementation for additional info
-     */
-    public $secondaryStorage;
-
     public function init()
     {
         parent::init();
@@ -36,31 +21,23 @@ class TempmailValidator extends Validator
 
     protected function validateValue($value)
     {
-        $validator = $this->buildValidator();
-        if ($validator->validate($value)) {
-            return null;
+        $validator = $this->buildValidator($value);
+        $results = $validator->getValidationResults()->asArray();
+        if ($results['disposable_email_provider']) {
+            return [$this->message, []];
         }
 
-        return [$this->message, []];
+        return null;
     }
 
-    /**
-     * @return TempmailBuster
-     */
-    protected function buildValidator()
+    protected function buildValidator(string $email): EmailValidator
     {
-        /** @var \Ely\TempMailBuster\LoaderInterface $loader */
-        $loader = new $this->loader;
-        /** @var StorageInterface $primaryStorage */
-        $primaryStorage = new $this->storage($loader->load());
-        $secondaryStorage = $this->secondaryStorage;
-        if (is_array($this->secondaryStorage)) {
-            $secondaryStorage = new $this->storage($this->secondaryStorage);
-        }
+        $emailAddress = new EmailAddress($email);
+        $emailDataProvider = new EmailDataProvider();
+        $emailValidationResults = new ValidationResults();
+        $emailValidator = new EmailValidator($emailAddress, $emailValidationResults, $emailDataProvider);
+        $emailValidator->registerValidator(new DisposableEmailValidator());
 
-        $validator = new TempmailBuster($primaryStorage, $secondaryStorage);
-        $validator->whitelistMode($this->whitelistMode);
-
-        return $validator;
+        return $emailValidator;
     }
 }

@@ -16,8 +16,9 @@
         }
     ],
     "require": {
+        "php": ">=7",
         "yiisoft/yii2": "*",
-        "ely/php-tempmailbuster": "~1.0.2"
+        "daveearley/daves-email-validation-tool": "^0.1.5"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8 || ~5.0"

@@ -3,7 +3,6 @@ namespace Ely\Yii2;
 
 include __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-use Ely\TempMailBuster\Storage;
 use yii\base\Model;
 use yii\console\Application;
 
@@ -22,70 +21,42 @@ class TempmailValidatorTest extends \PHPUnit_Framework_TestCase
     public function testValidateValue()
     {
         $validator = new TempmailValidator();
-        $this->assertNull($this->callValidateValue($validator, 'team@ely.by'));
-        $this->assertEquals([$validator->message, []], $this->callValidateValue($validator, 'h4l29@spam4.me'));
-    }
-
-    public function testBuildValidator()
-    {
-        $validator = new TempmailValidator();
-        $this->assertInstanceOf('\Ely\TempMailBuster\Validator', $this->callBuildValidator($validator));
-
-        $domains = ['mojang\.com'];
-        $validator = new TempmailValidator(['secondaryStorage' => $domains]);
-        $buster = $this->callBuildValidator($validator);
-        $this->assertInstanceOf('\Ely\TempMailBuster\Validator', $buster);
-        $this->assertEquals($domains, $buster->getSecondaryStorage()->getItems());
-
-        $validator = new TempmailValidator(['secondaryStorage' => new Storage($domains)]);
-        $buster = $this->callBuildValidator($validator);
-        $this->assertInstanceOf('\Ely\TempMailBuster\Validator', $buster);
-        $this->assertEquals($domains, $buster->getSecondaryStorage()->getItems());
+        $this->assertTrue($validator->validate('team@ely.by'));
+        $this->assertFalse($validator->validate('h4l29@spam4.me', $error));
+        $this->assertSame('the input value is not allowed email address.', $error);
     }
 
     public function testValidatorOnModel()
     {
-        $model = new DummyModel();
+        $model = $this->createDummyModel();
         $model->email = 'team@ely.by';
         $this->assertTrue($model->validate());
 
-        $model = new DummyModel();
+        $model = $this->createDummyModel();
         $model->email = 'spam@spam4.me';
         $this->assertFalse($model->validate());
-        $this->assertNotEmpty($model->getErrors('email'));
+        $this->assertSame('Email is not allowed email address.', $model->getFirstError('email'));
+
+        $model = $this->createDummyModel('{attribute} with custom message.');
+        $model->email = 'spam@spam4.me';
+        $this->assertFalse($model->validate());
+        $this->assertSame('Email with custom message.', $model->getFirstError('email'));
     }
 
-    /**
-     * @param TempmailValidator $object
-     * @return \Ely\TempMailBuster\Validator
-     */
-    private function callBuildValidator($object)
-    {
-        $class = new \ReflectionClass($object);
-        $method = $class->getMethod('buildValidator');
-        $method->setAccessible(true);
+    private function createDummyModel(string $customMessage = null) {
+        return new class(['customMessage' => $customMessage]) extends Model
+        {
+            public $email;
 
-        return $method->invoke($object);
-    }
+            public $customMessage;
 
-    private function callValidateValue($object, $value)
-    {
-        $class = new \ReflectionClass($object);
-        $method = $class->getMethod('validateValue');
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, [$value]);
-    }
-}
-
-class DummyModel extends Model
-{
-    public $email;
-
-    public function rules()
-    {
-        return [
-            [['email'], TempmailValidator::className()],
-        ];
+            public function rules()
+            {
+                return [
+                    [['email'], TempmailValidator::class, 'message' => $this->customMessage],
+                ];
+            }
+        };
     }
 }
+
