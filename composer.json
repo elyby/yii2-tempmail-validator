@@ -18,10 +18,28 @@
     "require": {
         "php": ">=7",
         "yiisoft/yii2": "*",
-        "daveearley/daves-email-validation-tool": "^0.1.5"
+        "daveearley/daves-email-validation-tool": "^1.2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8 || ~5.0"
+    },
+    "replace": {
+        "bower-asset/inputmask": "*",
+        "bower-asset/jquery": "*",
+        "bower-asset/punycode": "*",
+        "bower-asset/raven-js": "*",
+        "bower-asset/yii2-pjax": "*",
+        "paragonie/random_compat": "2.99.99",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-intl-grapheme": "*",
+        "symfony/polyfill-intl-idn": "*",
+        "symfony/polyfill-intl-normalizer": "*",
+        "symfony/polyfill-mbstring": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "yiisoft/yii2-composer": "*"
     },
     "autoload": {
         "psr-4": {
