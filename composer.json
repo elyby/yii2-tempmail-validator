@@ -16,21 +16,19 @@
         }
     ],
     "require": {
-        "php": ">=7",
+        "php": ">=7.1",
         "yiisoft/yii2": "*",
         "daveearley/daves-email-validation-tool": "^1.2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.8 || ~5.0"
+        "phpunit/phpunit": "^9.6"
     },
-    "replace": {
-        "bower-asset/inputmask": "*",
-        "bower-asset/jquery": "*",
-        "bower-asset/punycode": "*",
-        "bower-asset/raven-js": "*",
-        "bower-asset/yii2-pjax": "*",
-        "yiisoft/yii2-composer": "*"
-    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Ely\\Yii2\\": "src"
@@ -38,5 +36,10 @@
     },
     "scripts": {
         "test": "phpunit"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
     }
 }

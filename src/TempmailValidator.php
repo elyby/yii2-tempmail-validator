@@ -19,7 +19,7 @@ class TempmailValidator extends Validator
         }
     }
 
-    protected function validateValue($value)
+    protected function validateValue($value): ?array
     {
         $validator = $this->buildValidator($value);
         $results = $validator->getValidationResults()->asArray();
