@@ -1,20 +1,21 @@
 <?php
 namespace Ely\Yii2;
 
-include __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
+include __DIR__ . '/../../../vendor/yiisoft/yii2/Yii.php';
 
+use PHPUnit\Framework\TestCase;
 use yii\base\Model;
 use yii\console\Application;
 
-class TempmailValidatorTest extends \PHPUnit_Framework_TestCase
+class TempmailValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         new Application([
             'id' => 'testapp',
             'basePath' => __DIR__,
-            'vendorPath' => __DIR__ . '/../vendor',
+            'vendorPath' => __DIR__ . '/../../../vendor',
         ]);
     }
 
@@ -43,14 +44,15 @@ class TempmailValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Email with custom message.', $model->getFirstError('email'));
     }
 
-    private function createDummyModel(string $customMessage = null) {
+    private function createDummyModel(string $customMessage = null): Model
+    {
         return new class(['customMessage' => $customMessage]) extends Model
         {
             public $email;
 
             public $customMessage;
 
-            public function rules()
+            public function rules(): array
             {
                 return [
                     [['email'], TempmailValidator::class, 'message' => $this->customMessage],
